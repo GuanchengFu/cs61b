@@ -8,7 +8,7 @@ public class Planet{
 	public double xxVel;
 	public double yyVel;
 	public double mass;
-	String imgFileName;
+	public String imgFileName;
 
 	public Planet(double xP, double yP, double xV,
               double yV, double m, String img){
