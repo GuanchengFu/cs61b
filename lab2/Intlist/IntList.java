@@ -91,6 +91,20 @@ public class IntList {
         A.rest = B;
         return res;
     }
+    /** Use the recursive method to solve the same question for dcatenate.
+     *  May modify items of A. Don't use 'new'.*/
+    public static IntList dcatenateR(IntList A, IntList B){
+        if (A == null){
+            return B;
+        }else{
+            if (A.rest != null){
+                return new IntList(A.first, dcatenateR(A.rest, B));
+            }else{
+                A.rest = B;
+                return A;
+            }
+        }
+    }
 
     /**
      * Returns a list consisting of the elements of A followed by the
