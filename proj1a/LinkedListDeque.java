@@ -1,5 +1,7 @@
 public class LinkedListDeque<T>{
-    /** A Deque implementation based on the Linked list design.*/
+    /**A Deque implementation based on the Linked list design.
+     * One special condition is when size = 0.
+     * At this time, the list is a null pointer, which cannot be used.*/
 
     private DLList list;
     private int size;
@@ -146,6 +148,7 @@ public class LinkedListDeque<T>{
             }else{
                 Node remove_item = sentinel.next;
                 sentinel.next = remove_item.next;
+                sentinel.next.previous = sentinel;
                 size -= 1;
                 return remove_item.first;
             }
