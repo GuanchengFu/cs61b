@@ -20,12 +20,16 @@ public class LinkedListDeque<T>{
 
     /** Adds an item of type T to the back of the deque.*/
     public void addLast(T item){
-        list.addLast(item);
+        if (this.size == 0){
+            list = new DLList(item);
+        }else{
+            list.addLast(item);
+        }
         size += 1;
     }
 
     public T getRecursive(int index){
-        if (index == 0){
+        if (size == 0){
             return null;
         }else{
             return list.getRecursive(index, list.sentinel.next);
@@ -95,9 +99,9 @@ public class LinkedListDeque<T>{
             sentinel.previous = last_ref.next;
         }
 
-        /** This function should be invoded as getRecursive(index, sentinel.next)*/
+        /** This function should be invoked as getRecursive(index, sentinel.next)*/
         public T getRecursive(int index, Node node){
-            if (node == null)
+            if (node == sentinel)
                 return null;
             if (index == 0){
                 return node.first;
@@ -166,6 +170,7 @@ public class LinkedListDeque<T>{
                 result += pointer.first;
                 result += " ";
                 index -= 1;
+                pointer = pointer.next;
             }
             System.out.println(result.strip());
         }
