@@ -140,7 +140,10 @@ public class ArrayDeque<T>{
         }
         items = temp;
         nextFirst = next;
-        nextLast = 1;
+        if (items.length == 1)
+            nextLast = 0;
+        else
+            nextLast = 1;
     }
     /**When the entire deque is full, the nextFirst will be 1 less than the nextLast.
      * The first element is in the location items[addFirst + 1]*/
