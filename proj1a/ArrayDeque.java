@@ -1,8 +1,8 @@
 public class ArrayDeque<T>{
-    int nextFirst;
-    int nextLast;
-    int size;
-    T[] items;
+    private int nextFirst;
+    private int nextLast;
+    private int size;
+    private T[] items;
 
     public ArrayDeque(){
         items = (T[]) new Object[8];
@@ -70,6 +70,7 @@ public class ArrayDeque<T>{
     /**Removes and returns the item at the back of the deque.  Return null if no such
      * element exists.
      * Take constant time.*/
+
     public T removeLast(){
         if (size == 0)
             return null;
@@ -77,7 +78,8 @@ public class ArrayDeque<T>{
             T temp = items[minusOne(nextLast, items.length)];
             items[minusOne(nextLast, items.length)] = null;
             size -= 1;
-            //resize needed.
+            if (nextLast == 1)
+                return temp;
             nextLast = minusOne(nextLast, items.length);
             resize();
             return temp;
@@ -143,23 +145,14 @@ public class ArrayDeque<T>{
         nextLast = 1;
     }
     /**When the entire deque is full, the nextFirst will be 1 less than the nextLast.
-     * The first element is in the location items[addFirst + 1]
+     * The first element is in the location items[addFirst + 1]*/
     public static void main(String[] args) {
         ArrayDeque<Integer> test = new ArrayDeque<>();
-        test.printDeque();
-        test.addFirst(5);
-        test.printDeque();
-        test.addFirst(6);
-        test.addLast(7);
-        test.printDeque();
-        test.addLast(12);
-        test.printDeque();
-        test.removeFirst();
-        test.printDeque();
-        test.removeFirst();
-        test.printDeque();
-        test.removeFirst();
-        test.printDeque();
-        test.removeFirst();
-    }*/
+        System.out.println(test.get(0));
+        test.addLast(5);
+        System.out.println(test.get(0));
+        test.addLast(16);
+        test.addFirst(8);
+        System.out.println(test.get(1));
+    }
 }
