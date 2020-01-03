@@ -117,8 +117,8 @@ public class ArrayDeque<T>{
         return size == items.length;
     }
 
-
-    private void resize(){
+    /**There exists arrays with zero elements, which should be paid special attention.*/
+    public void resize(){
         T[] temp = null;
         double load_rate = ((double) size )/ items.length;
         if (full()){
@@ -147,13 +147,4 @@ public class ArrayDeque<T>{
     }
     /**When the entire deque is full, the nextFirst will be 1 less than the nextLast.
      * The first element is in the location items[addFirst + 1]*/
-    public static void main(String[] args) {
-        ArrayDeque<Integer> test = new ArrayDeque<>();
-        System.out.println(test.get(0));
-        test.addLast(5);
-        System.out.println(test.get(0));
-        test.addLast(16);
-        test.addFirst(8);
-        System.out.println(test.get(1));
-    }
 }
