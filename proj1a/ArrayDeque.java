@@ -17,7 +17,7 @@ public class ArrayDeque<T>{
     public void addFirst(T item){
         items[nextFirst] = item;
         nextFirst = minusOne(nextFirst, items.length);
-        size +=1;
+        size += 1;
         resize();
     }
 
@@ -26,7 +26,7 @@ public class ArrayDeque<T>{
     public void addLast(T item){
         items[nextLast] = item;
         nextLast = plusOne(nextLast, items.length);
-        size +=1;
+        size += 1;
         resize();
     }
 
@@ -118,7 +118,7 @@ public class ArrayDeque<T>{
     }
 
     /**There exists arrays with zero elements, which should be paid special attention.*/
-    public void resize(){
+    private void resize(){
         T[] temp = null;
         double load_rate = ((double) size )/ items.length;
         if (full()){
