@@ -40,13 +40,15 @@ public class TestPalindrome {
         assertTrue(palindrome.isPalindrome("dlame", obo));
         assertTrue(palindrome.isPalindrome("flbme", obo));
         assertFalse(palindrome.isPalindrome("flane", obo));
+        assertFalse(palindrome.isPalindrome("Flake", obo));
     }
 
+    /**
     @Test
     public void testGetReverse(){
         String input = "I have an egg";
         String actual = palindrome.getReverse(input);
         String expected = "gge na evah I";
         assertEquals(expected, actual);
-    }
+    }*/
 }

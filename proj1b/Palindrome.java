@@ -22,7 +22,7 @@ public class Palindrome{
 
     /**Return the reverse version of the given string word.
      * This function will only be invoked if the word length is greater or equal to 2.*/
-    public String getReverse(String word){
+    private String getReverse(String word){
         String temp = "";
         Deque d = wordToDeque(word);
         while(!d.isEmpty()){
