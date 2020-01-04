@@ -35,6 +35,10 @@ public class TestPalindrome {
 
         //Test by using the rule OffByOne
         OffByOne obo = new OffByOne();
+        assertTrue(palindrome.isPalindrome("A", obo));
+        assertTrue(palindrome.isPalindrome("a", obo));
+        assertTrue(palindrome.isPalindrome("", obo));
+        assertFalse(palindrome.isPalindrome("aaaaab", obo));
         assertTrue(palindrome.isPalindrome("flake", obo));
         assertTrue(palindrome.isPalindrome("flame", obo));
         assertTrue(palindrome.isPalindrome("dlame", obo));
