@@ -41,6 +41,9 @@ public class TestPalindrome {
         assertTrue(palindrome.isPalindrome("flbme", obo));
         assertFalse(palindrome.isPalindrome("flane", obo));
         assertFalse(palindrome.isPalindrome("Flake", obo));
+        assertTrue(palindrome.isPalindrome("AlakB", obo));
+        assertTrue(palindrome.isPalindrome("&lak%", obo));
+        assertFalse(palindrome.isPalindrome("FlakM", obo));
     }
 
     /**
