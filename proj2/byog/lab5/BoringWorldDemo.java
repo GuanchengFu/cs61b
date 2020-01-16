@@ -29,8 +29,9 @@ public class BoringWorldDemo {
             for (int y = 5; y < 10; y += 1) {
                 world[x][y] = Tileset.WALL;
             }
-        }
 
+        }
+        world[24][16] = Tileset.PLAYER;
         // draws the world to the screen
         ter.renderFrame(world);
     }
