@@ -1,4 +1,4 @@
-public class LinkedListDeque<T> implements Deque<T>{
+public class LinkedListDeque<T> implements Deque<T> {
     /**A Deque implementation based on the Linked list design.
      * One special condition is when size = 0.
      * At this time, the list is a null pointer, which cannot be used.*/
@@ -6,14 +6,14 @@ public class LinkedListDeque<T> implements Deque<T>{
     private DLList list;
     private int size;
 
-    public LinkedListDeque(){
+    public LinkedListDeque() {
         this.size = 0;
     }
 
     /** Adds an item of type T to the front of the deque.*/
     @Override
-    public void addFirst(T item){
-        if(this.size == 0){
+    public void addFirst(T item) {
+        if (this.size == 0) {
             list = new DLList(item);
         }else{
             list.addFirst(item);
@@ -198,5 +198,4 @@ public class LinkedListDeque<T> implements Deque<T>{
             }
         }
     }
-
 }

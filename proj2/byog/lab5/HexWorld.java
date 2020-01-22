@@ -134,7 +134,7 @@ public class HexWorld {
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         initializeWorld(world);
 
-        drawHexagon(4, 20, 49, world);
+        drawHexagon(3, 20, 49, world);
         ter.renderFrame(world);
     }
 }
