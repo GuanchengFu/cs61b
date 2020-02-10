@@ -82,6 +82,11 @@ public class Game {
         }
     }
 
+
+
+
+
+
     /**Create the world using the seed input by the user.
      * The world is connected by one room - oen hallway - one room,
      * which means that each room must connect with a hallway.*/
@@ -149,6 +154,8 @@ public class Game {
     public Coordinate[] createRoom(int length, int width, Coordinate entry_fir, Coordinate entry_sec, Coordinate first) {
         int direction = getDirection(entry_fir, entry_sec, first);
         Coordinate entry_for_next;   //The upper-left corner of the new area.
+
+        Coordinate[] result = new Coordinate[3];
         //Write the case for the down direction.
         switch (direction) {
             case 1:
@@ -168,13 +175,17 @@ public class Game {
                 entry_for_next = null;
         }
 
-        /**
-         * result[0] = entry_fir for the next room.
-         * result[1] = entry_sec for the next room.
-         * result[2] = The exit area which should be changed to floor.
-         * result[3] = THe upper-left corner of the current area.*/
         Coordinate exit = getExit(length, width, entry_for_next);
-
+        setTileset(Tileset.FLOOR, exit);
+        if (world[exit.x - 1][exit.y] == Tileset.WALL) {
+            result[0] = new Coordinate(exit.x - 1, exit.y);
+            result[1] = new Coordinate(exit.x + 1, exit.y);
+        } else {
+            result[0] = new Coordinate(exit.x, exit.y + 1);
+            result[1] = new Coordinate(exit.x, exit.y - 1);
+        }
+        result[2] = entry_for_next;
+        return result;
     }
 
     public Coordinate[] createHallWay(int length, Coordinate entry_fir, Coordinate entry_sec, Coordinate first) {
@@ -205,6 +216,7 @@ public class Game {
         Coordinate exit = null;
         while (!valid) {
             int exitNumber = RandomUtils.uniform(RANDOM, availableChoices);
+            System.out.print(exitNumber);
             exit = findEntry(exitNumber, entry, length, width);
             if (checkValidExit(exit)) {
                 valid = true;
@@ -213,51 +225,11 @@ public class Game {
         return exit;
     }
 
-    /**Find the entry whose distance between entry is number.
-     * @param entry Entry is the up-left corner of the room area.
-     *              entry should not be changed during the execution.
-     * @param number number is [0, number]*/
-    private Coordinate findEntry(int number, Coordinate entry, int width, int height) {
-        Coordinate result = null;
-        int xValue = entry.x;
-        int yValue = entry.y;
-        int xLength = 0;
-        int yLength = 0;
-        while (number > 0) {
-            if (xLength < width - 1 && yLength == 0) {
-                result = new Coordinate(xValue + 1, yValue);
-                xLength += 1;
-            } else if (xLength == width - 1 && yLength != height - 1) {
-                result = new Coordinate(xValue, yValue - 1);
-                yLength += 1;
-            } else if (yLength == height - 1 && xLength != 0) {
-                result = new Coordinate(xValue - 1, yValue);
-                xLength -= 1;
-            } else {
-                result = new Coordinate(xValue, yValue + 1);
-                yLength -= 1;
-            }
-            number --;
-        }
-
-        return result;
-    }
 
 
 
-    /**Check whether an entry can be used to connect with other entries.
-     * should check the corner condition.*/
-    private boolean checkValidExit(Coordinate entry) {
-        int x = entry.x;
-        int y = entry.y;
-        if (x == 0 || x == WIDTH - 1 || y == 0 || y == HEIGHT - 1) {
-            return false;
-        } else {
-            boolean validFlag1 = (world[x - 1][y] == Tileset.FLOOR) || (world[x + 1][y] == Tileset.FLOOR) || (world[x][y + 1] == Tileset.FLOOR) || (world[x][y - 1] == Tileset.FLOOR);
-            boolean validFlag2 =  (world[x - 1][y] == Tileset.NOTHING) || (world[x + 1][y] == Tileset.NOTHING) || (world[x][y + 1] == Tileset.NOTHING) || (world[x][y - 1] == Tileset.NOTHING);
-            return validFlag1 && validFlag2;
-        }
-    }
+
+
 
     /**@return Return the Coordinate of the upper-left corner.
      * This coordinate can contain all the information needed for further calculation.*/
@@ -379,30 +351,7 @@ public class Game {
         }
     }
 
-    /**Get the direction of the room for the next entry.
-     * @param first The upper left corner of the current area.
-     * @return 1: The up direction.
-     * @return 2: The down direction.
-     * @return 3: The left direction.
-     * @return 4: The right direction.
-     * Throw exception and return 0 if non of the above conditions are not fulfilled.*/
-    public int getDirection(Coordinate entry_fir, Coordinate entry_sec, Coordinate first) {
-        if (entry_fir.y == entry_sec.y) {
-            if (entry_fir.y == first.y) {
-                return 1;
-            } else {
-                return 2;
-            }
-        }
-        if (entry_fir.x == entry_fir.x) {
-            if (entry_fir.x == first.x) {
-                return 3;
-            } else {
-                return 4;
-            }
-        }
-        return 0;
-    }
+
 
 
     /**Print out the original menu where the user can choose from:
@@ -454,8 +403,86 @@ public class Game {
     }
 
 
+
+
+
+
+    //The following functions have been tested.
+
+
+    /**Find the entry whose distance between entry is number.
+     * @param entry Entry is the up-left corner of the room area.
+     *              entry should not be changed during the execution.
+     * @param number number is [0, number]*/
+    public Coordinate findEntry(int number, Coordinate entry, int width, int height) {
+        Coordinate result = new Coordinate(entry.x, entry.y);
+        int xValue = entry.x;
+        int yValue = entry.y;
+        int xLength = 0;
+        int yLength = 0;
+        while (number > 0) {
+            if (xLength < width - 1 && yLength == 0) {
+                xValue += 1;
+                xLength += 1;
+            } else if (xLength == width - 1 && yLength != height - 1) {
+                yValue -= 1;
+                yLength += 1;
+            } else if (yLength == height - 1 && xLength != 0) {
+                xValue -= 1;
+                xLength -= 1;
+            } else {
+                yValue += 1;
+                yLength -= 1;
+            }
+            number --;
+        }
+
+        return new Coordinate(xValue, yValue);
+    }
+
+    /**Get the direction of the room for the next entry.
+     * @param first The upper left corner of the current area.
+     * @return 1: The up direction.
+     * @return 2: The down direction.
+     * @return 3: The left direction.
+     * @return 4: The right direction.
+     * Throw exception and return 0 if non of the above conditions are not fulfilled.*/
+    public int getDirection(Coordinate entry_fir, Coordinate entry_sec, Coordinate first) {
+        if (entry_fir.y == entry_sec.y) {
+            if (entry_fir.y == first.y) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+        if (entry_fir.x == entry_fir.x) {
+            if (entry_fir.x == first.x) {
+                return 3;
+            } else {
+                return 4;
+            }
+        }
+        return 0;
+    }
+
+
+    /**Check whether an entry can be used to connect with other entries.
+     * should check the corner condition.*/
+    public boolean checkValidExit(Coordinate entry) {
+        int x = entry.x;
+        int y = entry.y;
+        if (x == 0 || x == WIDTH - 1 || y == 0 || y == HEIGHT - 1) {
+            return false;
+        } else {
+            boolean validFlag1 = (world[x - 1][y] == Tileset.FLOOR) || (world[x + 1][y] == Tileset.FLOOR) || (world[x][y + 1] == Tileset.FLOOR) || (world[x][y - 1] == Tileset.FLOOR);
+            boolean validFlag2 =  (world[x - 1][y] == Tileset.NOTHING) || (world[x + 1][y] == Tileset.NOTHING) || (world[x][y + 1] == Tileset.NOTHING) || (world[x][y - 1] == Tileset.NOTHING);
+            return validFlag1 && validFlag2;
+        }
+    }
+
+
     /**This class is only used for record the coordinate of the tiles.*/
-    private class Coordinate {
+    public static class Coordinate {
         int x;
         int y;
 
@@ -463,5 +490,10 @@ public class Game {
             this.x = x;
             this.y = y;
         }
+    }
+
+    /**For test purpose only!*/
+    public TETile[][] getWorld() {
+        return world;
     }
 }
