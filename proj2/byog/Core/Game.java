@@ -94,17 +94,8 @@ public class Game {
         ter.initialize(WIDTH, HEIGHT);
         initializeWorld(world);
 
-        boolean preRoom = true;
-        int number = 0;
-        Coordinate[] next_entry;
-
-        next_entry = createInitialRoom();
-        next_entry = createHallWay(7, next_entry[0], next_entry[1], next_entry[2]);
-        setTileset(Tileset.FLOWER, next_entry[0]);
-        setTileset(Tileset.FLOWER, next_entry[1]);
-
-
-
+        buildRoom( 5, 8, new Coordinate(39, 16));
+        fillWithFloor(5, 8, new Coordinate(39, 16));
         ter.renderFrame(world);
 
         //createRoom();
@@ -125,11 +116,11 @@ public class Game {
         world[76][16] = Tileset.WALL;
         world[76][14] = Tileset.WALL;
         world[76][15] = Tileset.FLOOR;
-        Coordinate corner = buildRightRoom(4, 6, entry1, entry2);
+        //Coordinate corner = buildRoom(4, 6, entry1);
         result[0] = entry1;
         result[1] = entry2;
-        result[2] = corner;
-        return result;
+        //result[2] = corner;
+        return null;
     }
 
     /**Initialize the world array with Nothing at first.*/
@@ -142,40 +133,26 @@ public class Game {
     }
 
     /**This function will create a room based on the arguments given.
-     * @param length: the number of walls in one line.
-     * @param width: the number of walls in one column.
+     * @param width: the number of walls in one line.
+     * @param height: the number of walls in one column.
      * @param entry_fir: The coordinate of the first entry point.
      *                 The left point in up-down case
      *                 The up point in left-right case
      * @param entry_sec: The coordinate of the second entry point.
      * @param first: the upper-left corner of the previous area.
-     * May change this so that it will automatically stop when corrupt with existed walls.
-     * */
-    public Coordinate[] createRoom(int length, int width, Coordinate entry_fir, Coordinate entry_sec, Coordinate first) {
+     * If the space is not available to create a room with width*height.
+     *             Then create a room with all the available space.
+     *
+     * Later change this to width, height, exit.  Create a room at Coordinate exit.*/
+    public Coordinate[] createRoom(int width, int height, Coordinate entry_fir, Coordinate entry_sec, Coordinate first) {
         int direction = getDirection(entry_fir, entry_sec, first);
-        Coordinate entry_for_next;   //The upper-left corner of the new area.
+        Coordinate entry_for_next = null;   //The upper-left corner of the new area.
 
         Coordinate[] result = new Coordinate[3];
         //Write the case for the down direction.
-        switch (direction) {
-            case 1:
-                entry_for_next = buildUpRoom(length, width, entry_fir, entry_sec);
-                break;
-            case 2:
-                entry_for_next = buildDownRoom(length, width, entry_fir, entry_sec);
-                break;
-            case 3:
-                entry_for_next = buildLeftRoom(length, width, entry_fir, entry_sec);
-                break;
-            case 4:
-                entry_for_next = buildRightRoom(length, width, entry_fir, entry_sec);
-                break;
-            default:
-                System.out.println("Something went wrong about the getDirection!");
-                entry_for_next = null;
-        }
 
-        Coordinate exit = getExit(length, width, entry_for_next);
+
+        Coordinate exit = getExit(width, height, entry_for_next);
         setTileset(Tileset.FLOOR, exit);
         if (world[exit.x - 1][exit.y] == Tileset.WALL) {
             result[0] = new Coordinate(exit.x - 1, exit.y);
@@ -186,6 +163,15 @@ public class Game {
         }
         result[2] = entry_for_next;
         return result;
+    }
+
+
+
+    public Coordinate getMidPoint(Coordinate entry_one, Coordinate entry_sec) {
+        if (entry_one.x == entry_sec.x) {
+            return new Coordinate(entry_one.x, (entry_one.y + entry_sec.y) / 2);
+        }
+        return new Coordinate(entry_one.y, (entry_one.x + entry_sec.x) / 2);
     }
 
     public Coordinate[] createHallWay(int length, Coordinate entry_fir, Coordinate entry_sec, Coordinate first) {
@@ -203,153 +189,80 @@ public class Game {
         }
     }
 
-    /**Randomly select one possible exit from all the available walls.
-     * @param length The number of walls in one row.
-     * @param width The number of walls in one column.
+
+
+
+    /**These two attributes control the direction for the next entry.*/
+    public boolean top = false;
+    public boolean left = true;
+
+
+    /**Update the flags*/
+    public void updateFlags(Coordinate entry) {
+        int x = entry.x;
+        int y = entry.y;
+
+        //If the entry is near the bottom of the map, then change the direction to top.
+        if (y <= 10) {
+
+        }
+    }
+
+    /**Randomly select one possible exits based on the generation rules.
+     * @param width The number of walls in one row.
+     * @param height The number of walls in one column.
      * @param entry The up-left corner of the area.
      * @return exit: Return the entry which is used as the entrance for the next area.
      * Later change this function so that it can choose the appropriate entry so that it has
      * enough space to build the room.*/
-    private Coordinate getExit(int length, int width, Coordinate entry) {
-        int availableChoices = length * 2 + (width - 2) * 2 - 5;
-        boolean valid = false;
-        Coordinate exit = null;
-        while (!valid) {
-            int exitNumber = RandomUtils.uniform(RANDOM, availableChoices);
-            System.out.print(exitNumber);
-            exit = findEntry(exitNumber, entry, length, width);
-            if (checkValidExit(exit)) {
-                valid = true;
-            }
-        }
-        return exit;
+    private Coordinate getExit(int width, int height, Coordinate entry) {
+        
+    }
+
+    /**From the left side of the area, choose a possible point.*/
+    public void chooseLeftExit(int width, int height, Coordinate entry) {
+
     }
 
 
-
-
+    /**Build a room with upper-left corner located at first.
+     * @param first The upper-left corner of the new room.*/
+    public void buildRoom(int width, int height, Coordinate first) {
+        int workX = first.x;
+        int workY = first.y;
+        for (int i = 0; i < width - 1; i ++) {
+            if (world[workX][workY] == Tileset.NOTHING) {
+                world[workX][workY] = Tileset.WALL;
+            }
+            workX += 1;
+        }
+        for (int i = 0; i < height - 1; i ++) {
+            if (world[workX][workY] == Tileset.NOTHING) {
+                world[workX][workY] = Tileset.WALL;
+            }
+            workY -= 1;
+        }
+        for (int i = 0; i < width - 1; i ++) {
+            if (world[workX][workY] == Tileset.NOTHING) {
+                world[workX][workY] = Tileset.WALL;
+            }
+            workX -= 1;
+        }
+        for (int i = 0; i < height - 1; i ++) {
+            if (world[workX][workY] == Tileset.NOTHING) {
+                world[workX][workY] = Tileset.WALL;
+            }
+            workY += 1;
+        }
+    }
 
 
 
     /**@return Return the Coordinate of the upper-left corner.
      * This coordinate can contain all the information needed for further calculation.*/
-    public Coordinate buildDownRoom(int length, int width, Coordinate entry_fir, Coordinate entry_sec) {
-        int randomLength = length - 3;
-        if (randomLength == 0) {
-            buildDownWall(width - 1, entry_fir);
-            buildDownWall(width - 1, entry_sec);
-            buildLeftWall(1, new Coordinate(entry_sec.x, entry_sec.y - width + 1));
-            fillWithFloor(1, width - 2, new Coordinate(entry_fir.x + 1, entry_fir.y - 1));
-            return entry_fir;
-        } else {
-            int leftOut = RandomUtils.uniform(RANDOM, randomLength);
-            int rightOut = randomLength - leftOut;
-            //System.out.println(rightOut);
-            buildLeftWall(leftOut, entry_fir);
-            buildLeftWall(rightOut, new Coordinate(entry_sec.x + rightOut + 1, entry_sec.y));
-            buildDownWall(width - 1, new Coordinate(entry_fir.x - leftOut, entry_fir.y));
-            buildDownWall(width - 1, new Coordinate(entry_sec.x + rightOut, entry_sec.y));
-            buildLeftWall(length - 2, new Coordinate(entry_sec.x + rightOut, entry_sec.y - width + 1));
-            fillWithFloor(length - 2, width - 2, new Coordinate(entry_fir.x - leftOut + 1, entry_fir.y - 1));
-            return new Coordinate(entry_fir.x - leftOut, entry_fir.y);
-        }
-    }
-
-    public Coordinate buildUpRoom(int length, int width, Coordinate entry_fir, Coordinate entry_sec) {
-        int randomLength = length - 3;
-        if (randomLength == 0) {
-            buildDownWall(width - 1, new Coordinate(entry_fir.x, entry_fir.y + width));
-            buildDownWall(width - 1, new Coordinate(entry_sec.x, entry_sec.y + width));
-            buildLeftWall(1, new Coordinate(entry_sec.x, entry_sec.y + width - 1));
-            fillWithFloor(1, width - 2, new Coordinate(entry_fir.x + 1, entry_fir.y + width - 2));
-            return new Coordinate(entry_fir.x, entry_fir.y + width - 1);
-        } else {
-            int leftOut = RandomUtils.uniform(RANDOM, randomLength);
-            int rightOut = randomLength - leftOut;
-            //System.out.println(rightOut);
-            buildLeftWall(leftOut, entry_fir);
-            buildLeftWall(rightOut, new Coordinate(entry_sec.x + rightOut + 1, entry_sec.y));
-            buildDownWall(width - 1, new Coordinate(entry_fir.x - leftOut, entry_fir.y + width));
-            buildDownWall(width - 1, new Coordinate(entry_sec.x + rightOut, entry_sec.y + width));
-            buildLeftWall(length - 2, new Coordinate(entry_sec.x + rightOut, entry_sec.y + width - 1));
-            fillWithFloor(length - 2, width - 2, new Coordinate(entry_fir.x - leftOut + 1, entry_fir.y + width - 2));
-            return new Coordinate(entry_fir.x - leftOut, entry_fir.y + width - 1);
-        }
-    }
-
-    public Coordinate buildLeftRoom(int length, int width, Coordinate entry_fir, Coordinate entry_sec) {
-        int randomLength = width - 3;
-        if (randomLength == 0) {
-            buildLeftWall(length - 1, entry_fir);
-            buildLeftWall(length - 1, entry_sec);
-            buildDownWall(1, new Coordinate(entry_fir.x - length + 1, entry_fir. y));
-            fillWithFloor(length - 2, 1, new Coordinate(entry_fir.x - length + 2, entry_fir.y - 1));
-            return new Coordinate(entry_fir.x - length + 1, entry_fir.y);
-        } else {
-            int upOut = RandomUtils.uniform(RANDOM, randomLength);
-            int downOut = randomLength - upOut;
-            //System.out.println(rightOut);
-            buildDownWall(upOut, new Coordinate(entry_fir.x, entry_fir.y + upOut + 1));
-            buildDownWall(downOut, entry_sec);
-            buildLeftWall(length - 1, new Coordinate(entry_fir.x, entry_fir.y + upOut));
-            buildLeftWall(length - 1, new Coordinate(entry_sec.x, entry_sec.y - downOut));
-            buildDownWall(width - 2, new Coordinate(entry_fir.x - length + 1, entry_fir.y + upOut));
-            fillWithFloor(length - 2, width - 2, new Coordinate(entry_fir.x - length + 2, entry_fir.y + upOut - 1));
-            return new Coordinate(entry_fir.x - length + 1, entry_fir.y + upOut);
-        }
-    }
-
-    public Coordinate buildRightRoom(int length, int width, Coordinate entry_fir, Coordinate entry_sec) {
-        int randomLength = width - 3;
-        if (randomLength == 0) {
-            buildLeftWall(length - 1, new Coordinate(entry_fir.x + length, entry_fir.y));
-            buildLeftWall(length - 1, new Coordinate(entry_sec.x + length, entry_sec.y));
-            buildDownWall(1, new Coordinate(entry_fir.x + length - 1, entry_fir.y));
-            fillWithFloor(length - 2, 1, new Coordinate(entry_fir.x + 1, entry_fir.y - 1));
-            return new Coordinate(entry_fir.x, entry_fir.y);
-        } else {
-            int upOut = RandomUtils.uniform(RANDOM, randomLength);
-            int downOut = randomLength - upOut;
-            //System.out.println(rightOut);
-            buildDownWall(upOut, new Coordinate(entry_fir.x, entry_fir.y + upOut + 1));
-            buildDownWall(downOut, entry_sec);
-            buildLeftWall(length - 1, new Coordinate(entry_fir.x + length, entry_fir.y + upOut));
-            buildLeftWall(length - 1, new Coordinate(entry_sec.x + length, entry_sec.y - downOut));
-            buildDownWall(width - 2, new Coordinate(entry_fir.x + length - 1, entry_fir.y + upOut));
-            fillWithFloor(length - 2, width - 2, new Coordinate(entry_fir.x + 1, entry_fir.y + upOut - 1));
-            return new Coordinate(entry_fir.x , entry_fir.y + upOut);
-        }
-    }
 
 
-    /**Build the left wall from entry to entry + length, entry not included.*/
-    private void buildLeftWall(int length, Coordinate entry) {
-        int workX = entry.x;
-        int workY = entry.y;
-        for (int i = 1; i <= length; i ++) {
-            world[workX - i][workY] = Tileset.WALL;
-        }
-    }
 
-    /**Build the down wall from entry to entry + length, entry not included.*/
-    private void buildDownWall(int length, Coordinate entry) {
-        int workX = entry.x;
-        int workY = entry.y;
-        for (int i = 1; i <= length; i ++) {
-            world[workX][workY - i] = Tileset.WALL;
-        }
-    }
-
-    /**Fill an area (width * height) will Tileset.FLOOR.*/
-    private void fillWithFloor(int width, int height, Coordinate entry) {
-        int x = entry.x;
-        int y = entry.y;
-        for (int row = 0; row < height; row ++) {
-            for (int column = 0; column < width; column ++) {
-                world[x + column][y - row] = Tileset.FLOOR;
-            }
-        }
-    }
 
 
 
@@ -407,7 +320,48 @@ public class Game {
 
 
 
+
+
+
+
+
+
+
+
     //The following functions have been tested.
+
+
+
+    /**Build the left wall from entry to entry + length, entry not included.*/
+    private void buildLeftWall(int length, Coordinate entry) {
+        int workX = entry.x;
+        int workY = entry.y;
+        for (int i = 1; i <= length; i ++) {
+            world[workX - i][workY] = Tileset.WALL;
+        }
+    }
+
+    /**Build the down wall from entry to entry + length, entry not included.*/
+    private void buildDownWall(int length, Coordinate entry) {
+        int workX = entry.x;
+        int workY = entry.y;
+        for (int i = 1; i <= length; i ++) {
+            world[workX][workY - i] = Tileset.WALL;
+        }
+    }
+
+    /**Fill an room with width, height properly.
+     * @param entry is the upper-left corner of the room.*/
+    private void fillWithFloor(int width, int height, Coordinate entry) {
+        int x = entry.x + 1;
+        int y = entry.y - 1;
+        for (int row = 0; row < height - 2; row ++) {
+            for (int column = 0; column < width - 2; column ++) {
+                world[x + column][y - row] = Tileset.FLOOR;
+            }
+        }
+    }
+
 
 
     /**Find the entry whose distance between entry is number.
@@ -492,7 +446,8 @@ public class Game {
         }
     }
 
-    /**For test purpose only!*/
+    /**For test purpose only!
+     * Later delete this section.*/
     public TETile[][] getWorld() {
         return world;
     }
