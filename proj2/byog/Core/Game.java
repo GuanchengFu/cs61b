@@ -132,20 +132,70 @@ public class Game {
         }
     }
 
+
+
+
+    public int getLeftSpace(Coordinate entry) {
+        int workX = entry.x;
+        int workY = entry.y;
+        int number = 1;
+        while (workX - number > 0) {
+            if (world[workX - number][workY] == Tileset.NOTHING) {
+                number += 1;
+            } else {
+                return number - 1;
+            }
+        }
+        return number;
+    }
+
+
+    public int getRightSpace(Coordinate entry) {
+        int workX = entry.x;
+        int workY = entry.y;
+        int number = 1;
+        while (workX + number > 79) {
+            if (world[workX + number][workY] == Tileset.NOTHING) {
+                number += 1;
+            } else {
+                return number - 1;
+            }
+        }
+        return number;
+    }
+
+    public int getAvailWidth(Coordinate entry_fir, Coordinate entry_sec, int direction) {
+        if (direction == 1 || direction == 2) {
+            int left = getLeftSpace(entry_fir);
+            int right = getRightSpace(entry_sec);
+            return left+right+3;
+        } else if (direction == 3) {
+            
+        }
+    }
+
     /**This function will create a room based on the arguments given.
      * @param width: the number of walls in one line.
      * @param height: the number of walls in one column.
-     * @param entry_fir: The coordinate of the first entry point.
-     *                 The left point in up-down case
-     *                 The up point in left-right case
-     * @param entry_sec: The coordinate of the second entry point.
-     * @param first: the upper-left corner of the previous area.
+     * @param entrance: The Tile which connect this room with the previous room.
+     * @param first: The upper-left corner of the previous room.
      * If the space is not available to create a room with width*height.
      *             Then create a room with all the available space.
      *
      * Later change this to width, height, exit.  Create a room at Coordinate exit.*/
-    public Coordinate[] createRoom(int width, int height, Coordinate entry_fir, Coordinate entry_sec, Coordinate first) {
+    public Coordinate[] createRoom(int width, int height, Coordinate entrance, Coordinate first) {
+        Coordinate entry_fir;
+        Coordinate entry_sec;
+        if (world[entrance.x - 1][entrance.y] == Tileset.WALL) {
+            entry_fir = new Coordinate(entrance.x - 1, entrance.y);
+            entry_sec = new Coordinate(entrance.x + 1, entrance.y);
+        } else {
+            entry_fir = new Coordinate(entrance.x, entrance.y + 1);
+            entry_sec = new Coordinate(entrance.x, entrance.y - 1);
+        }
         int direction = getDirection(entry_fir, entry_sec, first);
+
+        //We need to find the available space of the future room.
         Coordinate entry_for_next = null;   //The upper-left corner of the new area.
 
         Coordinate[] result = new Coordinate[3];
@@ -179,10 +229,12 @@ public class Game {
         switch (direction) {
             case 1:
             case 2:
-                return createRoom(3, length, entry_fir, entry_sec, first);
+                //return createRoom(3, length, entry_fir, entry_sec, first);
+                return null;
             case 3:
             case 4:
-                return createRoom(length, 3, entry_fir, entry_sec, first);
+                //return createRoom(length, 3, entry_fir, entry_sec, first);
+                return null;
             default:
                 System.out.println("Something wrong occurs in the createHallWay switch branches!");
                 return null;
@@ -216,7 +268,7 @@ public class Game {
      * Later change this function so that it can choose the appropriate entry so that it has
      * enough space to build the room.*/
     private Coordinate getExit(int width, int height, Coordinate entry) {
-        
+        return null;
     }
 
     /**From the left side of the area, choose a possible point.*/

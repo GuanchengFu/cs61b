@@ -38,13 +38,12 @@ public class TestGame {
         world[76][16] = Tileset.WALL;
         world[76][14] = Tileset.WALL;
         world[76][15] = Tileset.FLOOR;
-        entry = g.buildRightRoom(width, height, entry1, entry2);
+        //entry = g.buildRightRoom(width, height, entry1, entry2);
     }
 
     /**Should test the following conditions:
      * 4 basic conditions
      * The corner condition*/
-    @Test
     public void TestFindEntry() {
         setUp();
         assertEquals(76, entry.x);
@@ -75,7 +74,7 @@ public class TestGame {
         assertEquals(16, x.y);
     }
 
-    @Test
+    //@Test
     public void TestGetDirection() {
         setUp();
         int test = g.getDirection(new Game.Coordinate(76, 18),
@@ -95,7 +94,7 @@ public class TestGame {
         assertEquals(3, test);
     }
 
-    @Test
+    //@Test
     public void TestValidEntries() {
         setUp();
         assertTrue(g.checkValidExit(new Game.Coordinate(76, 17)));
@@ -103,6 +102,17 @@ public class TestGame {
         assertFalse(g.checkValidExit(new Game.Coordinate(79, 16)));
         assertFalse(g.checkValidExit(new Game.Coordinate(76, 13)));
         assertTrue(g.checkValidExit(new Game.Coordinate(77, 13)));
+    }
+
+    @Test
+    public void TestGetLeftSpace() {
+        setUp();
+        assertEquals(6, g.getLeftSpace(new Game.Coordinate(6, 0)));
+        world[3][0] = Tileset.WALL;
+        assertEquals(2, g.getLeftSpace(new Game.Coordinate(6, 0)));
+        world[4][0] = Tileset.WALL;
+        assertEquals(0, g.getLeftSpace(new Game.Coordinate(4, 0)));
+        assertEquals(1, g.getLeftSpace(new Game.Coordinate(6, 0)));
     }
 
     public static void main(String[] args) {
