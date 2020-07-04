@@ -140,8 +140,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     /** The return result is an array with length 2.
      *  array[0]: The structured tree after deleting the item.
      *  array[1]: The deleted item, otherwise set it to null.*/
-    private Node[] removeHelper(Node n, K key) {
-        Node[] result = (Node[]) new Object[2];
+    private Object[] removeHelper(Node n, K key) {
+        Object[] result = new Object[2];
         if (n == null) {
             // The base case of the recursion.
             // The item is not in the tree.
@@ -164,7 +164,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                     result[0] = n.left;
                 //result[1] = n;
             } else {
-                Node replaceNode = findReplaceNode(n.left)[1];
+                Node replaceNode = (Node) findReplaceNode(n.left)[1];
                 if (replaceNode != n.left) {
                     replaceNode.left = n.left;
                 } else
@@ -177,11 +177,13 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else if (n.key.compareTo(key) < 0) {
             // n.key < key Move to the right branch.
             result = removeHelper(n.right, key);
-            n.right = result[0];
+            n.right = (Node)result[0];
+            result[0] = n;
             return result;
         } else {
             result = removeHelper(n.left, key);
-            n.left = result[0];
+            n.left = (Node)result[0];
+            result[0] = n;
             return result;
         }
     }
@@ -192,28 +194,30 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        Node[] temp = removeHelper(root, key);
+        Object[] temp = removeHelper(root, key);
         if (root.key.compareTo(key) == 0) {
-            root = temp[0];
+            root = (Node)temp[0];
         }
+        if (temp[1] == null)
+            return null;
         size -= 1;
-        return temp[1].value;
+        return ((Node)temp[1]).value;
     }
 
     /** Find the node to replace the deleted node.
      *  n should start be at the left branch.
      *  array[1]: The node that can be used to replacement.
      *  array[0]: Keep the tree structure.*/
-    private Node[] findReplaceNode(Node n) {
-        Node[] result = (Node[]) new Object[2];
+    private Object[] findReplaceNode(Node n) {
+        Object[] result = new Object[2];
         if (n.right == null) {
             result[0] = null;
             result[1] = n;
             return result;
         }
         result[0] = n;
-        Node[] temp = findReplaceNode(n.right);
-        n.right = temp[0];
+        Object[] temp = findReplaceNode(n.right);
+        n.right = (Node) temp[0];
         result[1] = temp[1];
         return result;
     }
@@ -238,5 +242,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         bstmap.put("cat", 10);
         bstmap.put("fish", 22);
         bstmap.put("zebra", 90);
+        bstmap.put("apple", 12);
+        bstmap.put("github", 18);
+        System.out.println(bstmap.remove("hello"));
     }
 }

@@ -53,19 +53,47 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        for (ArrayMap b: buckets)
+        {
+            if (b.containsKey(key))
+                return (V) b.get(key);}
+        return null;
     }
 
     /* Associates the specified value with the specified key in this map. */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        for (ArrayMap b: buckets) {
+            if (b.containsKey(key)) {
+                b.put(key, value);
+                return;
+            }
+        }
+        buckets[hash(key)].put(key, value);
+        size += 1;
+        if (loadFactor() > MAX_LF) {
+            resize();
+        }
+    }
+
+    private void resize() {
+        ArrayMap<K, V>[] tempBuckets = buckets;
+        buckets = new ArrayMap[2 * buckets.length];
+        for (int i = 0; i < this.buckets.length; i += 1) {
+            this.buckets[i] = new ArrayMap<>();
+        }
+        for (ArrayMap a: tempBuckets) {
+            Set<K> keyset = a.keySet();
+            for (K k: keyset) {
+                buckets[hash(k)].put(k, (V) a.get(k));
+            }
+        }
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
@@ -95,5 +123,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public Iterator<K> iterator() {
         throw new UnsupportedOperationException();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("x");
     }
 }
