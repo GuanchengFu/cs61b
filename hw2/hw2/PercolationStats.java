@@ -17,7 +17,7 @@ public class PercolationStats {
             if (!p.isOpen(openSite / N, openSite % N))
                 p.open(openSite / N, openSite % N);
         }
-        return p.numberOfOpenSites() / N * N;
+        return p.numberOfOpenSites() / (N * N);
     }
 
 
