@@ -17,7 +17,9 @@ public class PercolationStats {
             if (!p.isOpen(openSite / N, openSite % N))
                 p.open(openSite / N, openSite % N);
         }
-        return p.numberOfOpenSites() / (N * N);
+        double x = p.numberOfOpenSites() / (N * N * 1.0);
+        //System.out.println(p.numberOfOpenSites());
+        return x;
     }
 
 
@@ -43,4 +45,10 @@ public class PercolationStats {
     public double confidenceHigh() {
         return mean() + 1.96 * stddev() / Math.sqrt(experimentTimes);
     }
+
+    /*
+    public static void main(String[] args) {
+        PercolationStats ps = new PercolationStats(20, 10, new PercolationFactory());
+        System.out.println(ps.stddev());
+    }*/
 }
