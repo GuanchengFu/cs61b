@@ -13,7 +13,7 @@ public class ComplexOomage implements Oomage {
     public int hashCode() {
         int total = 0;
         for (int x : params) {
-            total = total * 256;
+            total = total * 257;
             total = total + x;
         }
         return total;
@@ -36,7 +36,7 @@ public class ComplexOomage implements Oomage {
         for (Integer x : params) {
             validate(x);
         }
-        this.params = new ArrayList<>(params);
+        this.params = new ArrayList(params);
     }
 
     private void validate(Integer param) {
@@ -73,9 +73,23 @@ public class ComplexOomage implements Oomage {
 
     public static ComplexOomage randomComplexOomage() {
         int N = StdRandom.uniform(1, 10);
-        ArrayList<Integer> params = new ArrayList<>(N);
+        ArrayList<Integer> params = new ArrayList(N);
         for (int i = 0; i < N; i += 1) {
             params.add(StdRandom.uniform(0, 255));
+        }
+        return new ComplexOomage(params);
+    }
+
+    public static ComplexOomage randomDeadlyOomage() {
+        int N = StdRandom.uniform(4, 10);
+        ArrayList<Integer> params = new ArrayList(N);
+        for (int i = 0; i < N; i += 1) {
+            if (N - 1 - i >= 4) {
+                params.add(StdRandom.uniform(0, 255));
+            } else {
+                params.add(234);
+            }
+
         }
         return new ComplexOomage(params);
     }
