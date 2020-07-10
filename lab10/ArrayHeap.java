@@ -1,4 +1,7 @@
 import org.junit.Test;
+
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -126,8 +129,15 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
 
         /** TODO: Your code here. */
         int leftChild = leftIndex(index);
+        // Need to verify whether the leftChild and the right child is valid.
         int rightChild = rightIndex(index);
-        int swapChild = min(min(index, leftChild), rightChild);
+        int swapChild = index;
+        if (inBounds(leftChild)) {
+            swapChild = min(swapChild, leftChild);
+        }
+        if (inBounds(rightChild)) {
+            swapChild = min(swapChild, rightChild);
+        }
         if (swapChild != index) {
             swap(swapChild, index);
             sink(swapChild);
@@ -162,7 +172,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (size > 1) {
             return contents[1].item();
         }
-        return null;
+        throw new NoSuchElementException("Priority queue underflow");
     }
 
     /**
@@ -177,16 +187,15 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     @Override
     public T removeMin() {
         /* TODO: Your code here! */
-        T item = peek();
-        if (size == 1) {
-            contents[1] = null;
-        } else {
-            // size != 1;
-            contents[1] = contents[size];
-            contents[size] = null;
-            sink(1);
+        if (size < 1) {
+            throw new NoSuchElementException("Priority queue underflow");
         }
+        T item = contents[1].item();
+        // size != 1;
+        contents[1] = contents[size];
+        contents[size] = null;
         size -= 1;
+        sink(1);
         return item;
     }
 
