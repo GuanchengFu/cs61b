@@ -155,35 +155,26 @@ public class Maze implements Observer {
             if (m.find()) {
                 String variable = m.group(1);
                 String value = m.group(2);
-                switch (variable) {
-                    case "N":
-                        N = Integer.parseInt(value);
-                        break;
-                    case "rseed":
-                        rseed = Integer.parseInt(value);
-                        break;
-                    case "pOpen":
-                        pOpen = Double.parseDouble(value);
-                        break;
-                    case "DRAW_DELAY_MS":
-                        DRAW_DELAY_MS = Integer.parseInt(value);
-                        break;
-                    case "MazeType":
-                        if (value.equals("SINGLE_GAP")) {
-                            mt = MazeType.SINGLE_GAP;
-                        }
+                if ("N".equals(variable)) {
+                    N = Integer.parseInt(value);
+                } else if ("rseed".equals(variable)) {
+                    rseed = Integer.parseInt(value);
+                } else if ("pOpen".equals(variable)) {
+                    pOpen = Double.parseDouble(value);
+                } else if ("DRAW_DELAY_MS".equals(variable)) {
+                    DRAW_DELAY_MS = Integer.parseInt(value);
+                } else if ("MazeType".equals(variable)) {
+                    if (value.equals("SINGLE_GAP")) {
+                        mt = MazeType.SINGLE_GAP;
+                    }
 
-                        if (value.equals("POPEN_SOLVABLE")) {
-                            mt = MazeType.POPEN_SOLVABLE;
-                        }
+                    if (value.equals("POPEN_SOLVABLE")) {
+                        mt = MazeType.POPEN_SOLVABLE;
+                    }
 
-                        if (value.equals("BLANK")) {
-                            mt = MazeType.BLANK;
-                        }
-
-                        break;
-                    default:
-                        break;
+                    if (value.equals("BLANK")) {
+                        mt = MazeType.BLANK;
+                    }
                 }
             }
         }
