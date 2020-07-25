@@ -20,7 +20,7 @@ public class AlphabetEasyPuzzle implements WorldState {
       * character. So if character == 'f', the neighbors will be 'e' and 'g'. */
     @Override
     public Iterable<WorldState> neighbors() {
-        Set<WorldState> neighbs = new HashSet<>();
+        Set<WorldState> neighbs = new HashSet<WorldState>();
         if (character - 1 >= 'a') {
             neighbs.add(new AlphabetEasyPuzzle((char) (character - 1)));
         }
