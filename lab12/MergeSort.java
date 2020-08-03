@@ -35,7 +35,13 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
         // Your code here!
-        return null;
+        Queue<Queue<Item>> result = new Queue<Queue<Item>>();
+        while (!items.isEmpty()) {
+            Queue<Item> temp = new Queue<Item>();
+            temp.enqueue(items.dequeue());
+            result.enqueue(temp);
+        }
+        return result;
     }
 
     /**
@@ -53,14 +59,44 @@ public class MergeSort {
      */
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
-        // Your code here!
-        return null;
+        Queue<Item> result = new Queue<Item>();
+        // Three conditions: q1 is empty, q2 is empty, q1 and q2 is not empty.
+        while (! (q1.isEmpty() && q2.isEmpty())) {
+            Item temp = getMin(q1, q2);
+            result.enqueue(temp);
+        }
+        return result;
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
         // Your code here!
-        return items;
+        Queue<Queue<Item>> QArray = makeSingleItemQueues(items);
+        if (QArray.size() == 0)
+            return items;
+        while (QArray.size() != 1) {
+            Queue<Item> q1 = QArray.dequeue();
+            Queue<Item> q2 = QArray.dequeue();
+            QArray.enqueue(mergeSortedQueues(q1, q2));
+        }
+        return QArray.dequeue();
+    }
+
+    public static void main(String[] args) {
+        Queue<Integer> test = new Queue<Integer>();
+        test.enqueue(37);
+        test.enqueue(76);
+        test.enqueue(14);
+        test.enqueue(0);
+        System.out.println("Original queue:");
+        for (Integer i:test) {
+            System.out.println(i);
+        }
+        System.out.println("After sorting:");
+        test = MergeSort.mergeSort(test);
+        for (Integer i:test) {
+            System.out.println(i);
+        }
     }
 }
