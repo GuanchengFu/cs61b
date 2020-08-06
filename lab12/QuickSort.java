@@ -79,10 +79,16 @@ public class QuickSort {
 
     public static void main(String[] args) {
         Queue<Integer> test = new Queue<Integer>();
-        //test.enqueue(37);
-        //test.enqueue(76);
-        //test.enqueue(14);
-        //test.enqueue(0);
+        test.enqueue(5);
+        test.enqueue(8);
+        test.enqueue(5);
+        test.enqueue(8);
+        test.enqueue(8);
+        test.enqueue(6);
+        test.enqueue(3);
+        test.enqueue(6);
+        test.enqueue(9);
+        test.enqueue(9);
         System.out.println("Original queue:");
         for (Integer i:test) {
             System.out.println(i);
